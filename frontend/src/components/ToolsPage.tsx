@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowUpRight, Sparkles } from 'lucide-react'
 import type { Capabilities } from '../lib/api'
 import { GROUPS, ToolRunner, toolEnabled, type ToolDef } from './Tools'
 import { GITHUB_URL, GithubMark } from './Hero'
+import { Wordmark } from './ui'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -151,7 +152,7 @@ export function ToolsPage({ caps, onHistoryChange, onFocusChange }: Props) {
       <div className="relative border-t border-line">
         <div className="wrap flex flex-col items-center justify-between gap-3 py-5 text-[13px] text-fg-3 sm:flex-row">
           <p>
-            <span className="font-semibold tracking-[0.18em] text-fg-2">SNIPEX</span>
+            <Wordmark className="text-[12px]" />
             <span className="ml-3">Tools · files auto-delete after {caps?.limits.retention_minutes ?? 60} min</span>
           </p>
           <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 transition-colors hover:text-fg">

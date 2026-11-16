@@ -1,10 +1,10 @@
-# Snipex
+# Zekrom
 
 I kept running into the same annoying thing: needing a bunch of files in a different format (a few slides as PDF, a spreadsheet as CSV, some photos as WebP), and every online converter doing one file at a time, or asking me to sign up.
 
-So I built Snipex. Drop up to 30 files, pick a format, click once, download everything as a zip.
+So I built Zekrom. Drop up to 30 files, pick a format, click once, download everything as a zip.
 
-![Snipex home](docs/screenshots/home.png)
+![Zekrom home](docs/screenshots/home.png)
 
 ## What it does
 
@@ -71,7 +71,7 @@ cd backend
 
 ## Settings
 
-Everything is an environment variable: `SNIPEX_MAX_FILES` (30), `SNIPEX_MAX_FILE_MB` (100), `SNIPEX_MAX_BATCH_MB` (500), `SNIPEX_WORKERS`, `SNIPEX_OFFICE_WORKERS`, `SNIPEX_TIMEOUT`, `SNIPEX_RETENTION_S` (3600), `SNIPEX_RATE_LIMIT`, `SNIPEX_SCAN_COMMAND` (plug in a virus scanner like `clamdscan`).
+Everything is an environment variable: `ZEKROM_MAX_FILES` (30), `ZEKROM_MAX_FILE_MB` (100), `ZEKROM_MAX_BATCH_MB` (500), `ZEKROM_WORKERS`, `ZEKROM_OFFICE_WORKERS`, `ZEKROM_TIMEOUT`, `ZEKROM_RETENTION_S` (3600), `ZEKROM_RATE_LIMIT`, `ZEKROM_SCAN_COMMAND` (plug in a virus scanner like `clamdscan`).
 
 ## Known limits
 

@@ -157,7 +157,7 @@ export function SupportedFormats({ caps }: { caps: Capabilities | null }) {
 
 const FEATURES = [
   { icon: FileStack, title: 'True batch conversion', body: 'Drop up to 30 mixed files. Documents, slides, sheets and images all convert in a single run.' },
-  { icon: Wand2, title: 'Smart output selection', body: 'SNIPEX only offers formats your files can actually become, and shows exactly which files fit each one.' },
+  { icon: Wand2, title: 'Smart output selection', body: 'Zekrom only offers formats your files can actually become, and shows exactly which files fit each one.' },
   { icon: Layers, title: 'Purpose-built engines', body: 'LibreOffice for office files, Pillow and MuPDF for images and PDFs, native parsers for data. Each format gets the right tool.' },
   { icon: Zap, title: 'Parallel and resilient', body: 'Controlled parallel workers with automatic retry. One bad file never stops the rest of the batch.' },
   { icon: ShieldCheck, title: 'Private by default', body: 'Every file is checked against its real signature, converted in an isolated process, and deleted automatically.' },
@@ -293,10 +293,10 @@ export function FAQ({ caps }: { caps: Capabilities | null }) {
     ['Do I need an account?', 'No. Upload, convert and download without signing up. Fair-use rate limits keep the service fast for everyone.'],
     ['How many files can I convert at once?', `Up to ${caps?.limits.max_files ?? 30} files per batch, ${caps?.limits.max_file_mb ?? 100} MB per file and ${caps?.limits.max_batch_mb ?? 500} MB per batch. Files are processed in parallel with a controlled number of workers.`],
     ['What happens to my files?', `Uploads and converted files are kept in isolated temporary storage and deleted automatically after ${minutes} minutes, or right away when you click “Clear Session”. Each file is converted in its own sandboxed process. Download links only work with a secret token issued to your browser.`],
-    ['Are my files encrypted?', 'Files travel over HTTPS when SNIPEX is deployed with TLS. They are not end-to-end encrypted: the server has to read a file in order to convert it, which is why files are deleted automatically.'],
+    ['Are my files encrypted?', 'Files travel over HTTPS when Zekrom is deployed with TLS. They are not end-to-end encrypted: the server has to read a file in order to convert it, which is why files are deleted automatically.'],
     ['What if one file fails?', 'The rest of the batch keeps going. You can download every file that succeeded, and each failure comes with a clear reason, such as a corrupted file, a password-protected PDF, or a format mismatch.'],
     ['How accurate are the conversions?', 'Office documents are rendered by LibreOffice, so they keep their layout faithfully. PDF → DOCX rebuilds an editable layout, so complex pages can shift. HTML and EPUB → PDF give a clean but simplified layout. Each route’s limits are listed under Supported Formats.'],
-    ['Why can’t I pick a certain output format?', 'SNIPEX only shows conversions it can actually perform for the files you uploaded. If a format is missing, that route isn’t supported, so you won’t get a broken file.'],
+    ['Why can’t I pick a certain output format?', 'Zekrom only shows conversions it can actually perform for the files you uploaded. If a format is missing, that route isn’t supported, so you won’t get a broken file.'],
   ]
   const [open, setOpen] = useState<number | null>(0)
   return (
@@ -335,7 +335,7 @@ export function Footer() {
         <p className="relative text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
           Whatever your file. Whatever your format.
           <br />
-          <span className="text-gradient">SNIPEX gets it converted.</span>
+          <span className="text-gradient">Zekrom gets it converted.</span>
         </p>
         <a href="#/" className="btn-primary relative mt-8 inline-flex h-12 items-center gap-2 rounded-xl px-6 font-semibold">
           Start converting <ArrowRight className="size-4" />

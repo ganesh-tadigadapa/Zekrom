@@ -42,7 +42,7 @@ def convert_group(items: list[dict], dst: str, options: dict) -> dict[str, list[
     soffice = options.get("_soffice")
     if not soffice:
         raise OfficeError("LibreOffice is not installed on this server")
-    profile = Path(options.get("_lo_profile") or tempfile.mkdtemp(prefix="snipex-lo-"))
+    profile = Path(options.get("_lo_profile") or tempfile.mkdtemp(prefix="zekrom-lo-"))
     work = Path(tempfile.mkdtemp(prefix="lo-group-", dir=options.get("_work_dir")))
     export_dir = work / "export"
     export_dir.mkdir()

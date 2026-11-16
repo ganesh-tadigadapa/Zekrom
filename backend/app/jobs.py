@@ -307,7 +307,7 @@ class JobManager:
             return {"ok": False, "error": "Converter crashed while processing this file", "recoverable": True}
         result = json.loads(lines[-1])
         if not result.get("ok") and result.get("trace"):
-            print(f"[snipex] {key} failed:\n{result['trace']}", file=sys.stderr)
+            print(f"[zekrom] {key} failed:\n{result['trace']}", file=sys.stderr)
         return result
 
     def _finish(self, batch: Batch, task: Task, files: list[Path]) -> None:
@@ -366,7 +366,7 @@ class JobManager:
         if not outputs:
             return None
         key = ",".join(o.id for o in outputs)
-        target = batch.dir / f"snipex-{batch.id[:8]}.zip"
+        target = batch.dir / f"zekrom-{batch.id[:8]}.zip"
         marker = batch.dir / ".zip-key"
         if target.exists() and marker.exists() and marker.read_text() == key:
             return target

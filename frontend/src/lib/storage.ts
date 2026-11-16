@@ -37,8 +37,8 @@ function write(key: string, value: unknown) {
   }
 }
 
-const HISTORY = 'snipex-history'
-const PRESETS = 'snipex-presets'
+const HISTORY = 'zekrom-history'
+const PRESETS = 'zekrom-presets'
 
 export const history = {
   list: (): HistoryEntry[] => read<HistoryEntry[]>(HISTORY, []),
@@ -74,7 +74,7 @@ export const presets = {
 
 export function getTheme(): 'dark' | 'light' {
   try {
-    return localStorage.getItem('snipex-theme') === 'light' ? 'light' : 'dark'
+    return localStorage.getItem('zekrom-theme') === 'light' ? 'light' : 'dark'
   } catch {
     return 'dark'
   }
@@ -83,7 +83,7 @@ export function getTheme(): 'dark' | 'light' {
 export function setTheme(t: 'dark' | 'light') {
   document.documentElement.dataset.theme = t
   try {
-    localStorage.setItem('snipex-theme', t)
+    localStorage.setItem('zekrom-theme', t)
   } catch {
     /* ignore */
   }

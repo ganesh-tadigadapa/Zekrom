@@ -1,4 +1,4 @@
-"""SNIPEX HTTP API."""
+"""ZEKROM HTTP API."""
 from __future__ import annotations
 
 import asyncio
@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
     await manager.stop()
 
 
-app = FastAPI(title="SNIPEX API", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="ZEKROM API", version="1.0.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
@@ -262,7 +262,7 @@ async def download_zip(batch_id: str, request: Request):
     path = await asyncio.to_thread(manager.build_zip, batch)
     if path is None:
         raise HTTPException(404, "No converted files are available yet")
-    return FileResponse(path, filename=f"snipex-{batch.id[:8]}.zip", media_type="application/zip")
+    return FileResponse(path, filename=f"zekrom-{batch.id[:8]}.zip", media_type="application/zip")
 
 
 @app.post("/api/conversions/{batch_id}/cancel")

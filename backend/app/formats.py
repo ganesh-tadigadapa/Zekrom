@@ -1,4 +1,4 @@
-"""Catalog of the file formats SNIPEX understands."""
+"""Catalog of the file formats ZEKROM understands."""
 from __future__ import annotations
 
 from dataclasses import dataclass

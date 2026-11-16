@@ -21,8 +21,8 @@ COPY --from=web /web/dist /app/frontend/dist
 RUN chown -R user /app
 USER user
 ENV HOME=/home/user \
-    SNIPEX_STORAGE=/tmp/snipex-storage \
-    SNIPEX_OFFICE_WORKERS=2 \
+    ZEKROM_STORAGE=/tmp/zekrom-storage \
+    ZEKROM_OFFICE_WORKERS=2 \
     PORT=7860
 EXPOSE 7860
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --proxy-headers --forwarded-allow-ips='*'"]

@@ -371,3 +371,22 @@ select {
 .tool-orbit { animation: orbit 70s linear infinite; pointer-events: none; }
 .tool-orbit-item { display: flex; animation: orbit 70s linear infinite reverse; }
 .tool-orbit:hover, .tool-orbit:hover .tool-orbit-item { animation-play-state: paused; }
+
+/* ZEKROM wordmark */
+.wordmark {
+  font-family: "Unbounded", "Inter", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  background: linear-gradient(180deg, #ffffff 0%, #ece4ff 45%, #b9a3f5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 14px rgba(168, 85, 247, 0.35));
+}
+[data-theme="light"] .wordmark {
+  background: linear-gradient(180deg, #1a1030 0%, #3b1f7a 55%, #6d28d9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: none;
+}

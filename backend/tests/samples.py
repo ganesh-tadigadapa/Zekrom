@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw
 
 from app.config import settings
 
-TEXT = "SNIPEX sample. Every File. One Click."
+TEXT = "ZEKROM sample. Every File. One Click."
 
 
 def _lo(src: Path, dst_ext: str, filt: str, out: Path) -> Path:
@@ -59,7 +59,7 @@ def build(out: Path) -> dict[str, Path]:
     img = Image.new("RGBA", (320, 200), (124, 58, 237, 255))
     d = ImageDraw.Draw(img)
     d.ellipse((40, 40, 160, 160), fill=(196, 181, 253, 128))
-    d.text((180, 90), "SNIPEX", fill="white")
+    d.text((180, 90), "ZEKROM", fill="white")
     img.save(out / "photo.png")
     img.convert("RGB").save(out / "photo.jpg", quality=90)
     img.save(out / "photo.webp")
@@ -96,7 +96,7 @@ def build(out: Path) -> dict[str, Path]:
     from pptx import Presentation
 
     prs = Presentation()
-    for title in ("Hello SNIPEX", "Second slide"):
+    for title in ("Hello ZEKROM", "Second slide"):
         slide = prs.slides.add_slide(prs.slide_layouts[1])
         slide.shapes.title.text = title
         slide.placeholders[1].text = TEXT

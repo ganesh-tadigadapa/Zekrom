@@ -161,7 +161,7 @@ export function Hero({ caps, error, onRetry, onHistoryChange, onFocusChange }: P
             <div className="mx-auto max-w-md rounded-[28px] border border-danger/30 bg-card/80 p-10 text-center">
               <AlertTriangle className="mx-auto mb-3 size-8 text-danger" />
               <p className="font-semibold">{error}</p>
-              <p className="mt-1 text-sm text-fg-2">Make sure the SNIPEX API is running, then try again.</p>
+              <p className="mt-1 text-sm text-fg-2">Make sure the Zekrom API is running, then try again.</p>
               <button onClick={onRetry} className="mt-5 inline-flex h-10 items-center gap-2 rounded-xl border border-line bg-card-2 px-4 text-sm font-medium hover:border-line-2">
                 <RefreshCw className="size-4" /> Retry
               </button>

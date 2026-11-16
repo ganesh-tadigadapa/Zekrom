@@ -49,7 +49,7 @@ with sync_playwright() as p:
     print("TOOL OUTPUT:", page.locator("li p").first.inner_text())
     m = b.new_page(viewport={"width": 390, "height": 844})
     m.goto(base); m.wait_for_selector("text=Drop your files here"); m.wait_for_timeout(1000); m.screenshot(path=out / "7-mobile.png")
-    m.evaluate("localStorage.setItem('snipex-theme','light')"); m.reload(); m.wait_for_selector("text=Drop your files here")
+    m.evaluate("localStorage.setItem('zekrom-theme','light')"); m.reload(); m.wait_for_selector("text=Drop your files here")
     m.locator('input[type=file]').first.set_input_files(files[:5]); m.wait_for_timeout(500)
     m.screenshot(path=out / "8-mobile-light.png")
     print("ERRORS:", errors)

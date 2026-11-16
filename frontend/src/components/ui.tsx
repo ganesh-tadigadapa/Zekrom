@@ -22,15 +22,23 @@ export function OrbitMark({ className = 'size-7' }: { className?: string }) {
       </defs>
       <ellipse cx="20" cy="20" rx="14.5" ry="9.5" transform="rotate(-24 20 20)" fill="none" stroke="#8B5CF6" strokeWidth="6" filter={`url(#ob-${id})`} opacity="0.9" />
       <ellipse cx="20" cy="20" rx="14.5" ry="9.5" transform="rotate(-24 20 20)" fill="none" stroke={`url(#og-${id})`} strokeWidth="4.2" />
+      {/* bolt cutting through the orbit */}
+      <path d="M22.6 5.5 13.4 21.4h6.1l-2.6 13.1 10.4-17.2h-6.3l1.6-11.8Z" fill="#8B5CF6" filter={`url(#ob-${id})`} opacity="0.85" />
+      <path d="M22.6 5.5 13.4 21.4h6.1l-2.6 13.1 10.4-17.2h-6.3l1.6-11.8Z" fill="#fff" stroke="#0b0912" strokeWidth="1.1" strokeLinejoin="round" />
     </svg>
   )
 }
 
+/** The ZEKROM name, set in a wide display face with a metallic sheen. */
+export function Wordmark({ className = '' }: { className?: string }) {
+  return <span className={`wordmark ${className}`}>ZEKROM</span>
+}
+
 export function Logo({ className = '', size = 'md' }: { className?: string; size?: 'md' | 'lg' }) {
   return (
-    <a href="#top" className={`flex items-center gap-3 font-semibold ${className}`} aria-label="SNIPEX home">
+    <a href="#top" className={`flex items-center gap-3 font-semibold ${className}`} aria-label="ZEKROM home">
       <OrbitMark className={size === 'lg' ? 'size-11' : 'size-8'} />
-      <span className={size === 'lg' ? 'text-[26px] tracking-[0.22em]' : 'hidden text-[15px] tracking-[0.2em] sm:inline'}>SNIPEX</span>
+      <Wordmark className={size === 'lg' ? 'text-[24px]' : 'hidden text-[14px] sm:inline'} />
     </a>
   )
 }
