@@ -29,10 +29,18 @@ You need Python 3.11+, Node 20+ and LibreOffice. LibreOffice does the Word / Pow
 cd backend && python3.11 -m venv .venv && .venv/bin/pip install -r requirements.txt && cd ..
 cd frontend && npm install && cd ..
 
-./dev.sh   # api on :8000, site on http://127.0.0.1:5173
+scripts/dev.sh   # api on :8000, site on http://127.0.0.1:5173
 ```
 
 There's also a `Dockerfile` if you want a single container (it builds the frontend and serves everything from one place).
+
+### Deploying
+
+It runs on a free Hugging Face Space (Docker). Create a Space with the Docker SDK, log in with `hf auth login`, then:
+
+```bash
+scripts/deploy-hf.sh <your-hf-username>
+```
 
 ## How it's put together
 
@@ -57,7 +65,7 @@ A few things I cared about:
 ```bash
 cd backend
 .venv/bin/python -m pytest -q                 # every conversion + the API
-.venv/bin/python tests/e2e_ui.py /tmp/e2e     # clicks through the real UI (needs ./dev.sh running)
+.venv/bin/python tests/e2e_ui.py /tmp/e2e     # clicks through the real UI (needs scripts/dev.sh running)
 .venv/bin/python tests/bench.py <samples>     # 30-file speed check
 ```
 
