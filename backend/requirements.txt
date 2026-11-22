@@ -9,6 +9,7 @@ python-docx
 markdown
 beautifulsoup4
 defusedxml
+unoserver
 # tests
 pytest
 httpx

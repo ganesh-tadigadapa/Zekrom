@@ -41,7 +41,9 @@ def save_image(img: Image.Image, target: Path, dst: str, quality: int = 90) -> N
     elif dst == "webp":
         kwargs = {"quality": quality, "method": 4}
     elif dst == "png":
-        kwargs = {"optimize": True}
+        # optimize=True is ~3x slower for a <1% smaller file. Big images (photos) barely compress
+        # as PNG anyway, so they get the fast level: ~4x quicker for ~10% more bytes.
+        kwargs = {"compress_level": 1 if img.width * img.height > 4_000_000 else 6}
     elif dst == "tiff":
         kwargs = {"compression": "tiff_lzw"}
     elif dst == "pdf":

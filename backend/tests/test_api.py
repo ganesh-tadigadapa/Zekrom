@@ -156,3 +156,31 @@ def test_office_group_isolates_a_broken_file(client, samples):
     by_name = {t["inputs"][0]["name"]: t for t in body["tasks"]}
     assert all(by_name[f"good-{i}.docx"]["status"] == "completed" for i in range(4))
     assert by_name["broken.docx"]["status"] in ("failed", "completed")  # LibreOffice may salvage an empty doc
+
+
+def test_office_via_running_libreoffice(client, samples):
+    """When a uno-capable Python exists, office files go through the long-running LibreOffice."""
+    from app.office_server import office_server
+
+    if not settings.soffice:
+        pytest.skip("LibreOffice not installed")
+    deadline = time.time() + 120
+    while not office_server.ready and time.time() < deadline:
+        time.sleep(0.5)
+    if not office_server.ready:
+        pytest.skip("no Python with the uno module here; the per-job path is covered above")
+    files = _files(samples, "docx", "pptx", "xlsx") + [("files", ("broken.docx", b"PK\x03\x04 not really a docx"))]
+    r = client.post("/api/conversions", files=files, data={"target": "pdf"})
+    body = _wait(client, r.json())
+    by_name = {t["inputs"][0]["name"]: t for t in body["tasks"]}
+    for key in ("docx", "pptx", "xlsx"):
+        t = by_name[samples[key].name]
+        assert t["status"] == "completed", t
+        d = client.get(f"/api/conversions/{body['id']}/files/{t['output']['id']}", params={"token": r.json()["token"]})
+        assert d.content.startswith(b"%PDF")
+    assert by_name["broken.docx"]["status"] in ("failed", "completed")
+    assert office_server.ready  # one bad file must not take the server down
+    # docx -> odt also goes through it and keeps the original name
+    r = client.post("/api/conversions", files=_files(samples, "docx"), data={"target": "odt"})
+    t = _wait(client, r.json())["tasks"][0]
+    assert t["status"] == "completed" and t["output"]["filename"].endswith(".odt")

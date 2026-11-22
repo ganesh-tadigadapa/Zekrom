@@ -54,6 +54,11 @@ class Settings:
         default_factory=lambda: Path(os.environ.get("ZEKROM_STORAGE", Path(tempfile.gettempdir()) / "zekrom-storage"))
     )
     soffice: str | None = field(default_factory=_find_soffice)
+    # Keep one LibreOffice running (via unoserver) instead of launching it for every job.
+    use_unoserver: bool = field(default_factory=lambda: os.environ.get("ZEKROM_UNOSERVER", "1") != "0")
+    # A Python that can `import uno`; auto-detected when unset.
+    uno_python: str | None = field(default_factory=lambda: os.environ.get("ZEKROM_UNO_PYTHON") or None)
+    unoserver_start_timeout_s: int = field(default_factory=lambda: _int("ZEKROM_UNOSERVER_START_TIMEOUT", 120))
     # Optional malware scanner command, e.g. "clamdscan --no-summary". Exit code 1 = infected.
     scan_command: str | None = field(default_factory=lambda: os.environ.get("ZEKROM_SCAN_COMMAND") or None)
     cors_origins: list[str] = field(

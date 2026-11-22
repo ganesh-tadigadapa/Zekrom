@@ -22,7 +22,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .config import settings
-from .formats import mime_for
+from .formats import FORMATS, mime_for
+from . import office_server as _office
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 
@@ -113,14 +114,21 @@ class JobManager:
             self._lo_slots.put_nowait(i)
         self._cleanup_task = asyncio.create_task(self._cleanup_loop())
         if settings.soffice:
-            for _ in range(settings.office_workers):
-                self._spawn_bg(self._warm_slot())
+            self._spawn_bg(self._start_office())
+
+    async def _start_office(self) -> None:
+        """Prefer one long-running LibreOffice; otherwise pre-warm the per-job profiles."""
+        if await _office.office_server.start():
+            return
+        for _ in range(settings.office_workers):
+            self._spawn_bg(self._warm_slot())
 
     async def stop(self) -> None:
         if self._cleanup_task:
             self._cleanup_task.cancel()
         for batch in list(self.batches.values()):
             await self.delete(batch.id)
+        await _office.office_server.stop()
 
     # ---- batch creation --------------------------------------------------------------------
     def new_batch_dir(self) -> tuple[str, Path]:
@@ -225,6 +233,10 @@ class JobManager:
                 t.attempts += 1
                 t.status = CONVERTING
                 t.started_at = t.started_at or time.time()
+            if _office.office_server.ready and _office.supports(tasks[0].inputs[0].format, tasks[0].target):
+                tasks = await self._office_via_server(batch, tasks)
+                if not tasks:
+                    return
             timeout = settings.conversion_timeout_s + 30 * (len(tasks) - 1)
             spec = {
                 "op": "office_group",
@@ -256,6 +268,30 @@ class JobManager:
             self._office_q[:0] = [(batch, t) for t in retry]
             self._lo_slots.put_nowait(slot)
             self._pump_office()
+
+    async def _office_via_server(self, batch: Batch, tasks: list[Task]) -> list[Task]:
+        """Convert on the running LibreOffice. Returns the tasks it couldn't do, for the per-job path."""
+        left: list[Task] = []
+        for i, t in enumerate(tasks):
+            if batch.cancelled:
+                t.status, t.finished_at = CANCELLED, time.time()
+                continue
+            out_dir = batch.dir / "out" / t.id
+            out_dir.mkdir(parents=True, exist_ok=True)
+            dest = out_dir / f"{t.stem}.{FORMATS[t.target].extensions[0]}"
+            if await _office.office_server.convert(t.inputs[0].path, dest, t.target):
+                if batch.cancelled:
+                    t.status = CANCELLED
+                else:
+                    self._finish(batch, t, [dest])
+                t.finished_at = time.time()
+                continue
+            dest.unlink(missing_ok=True)
+            left.append(t)
+            if not _office.office_server.ready:
+                left.extend(x for x in tasks[i + 1:] if not batch.cancelled)
+                break
+        return left
 
     async def _warm_slot(self) -> None:
         """Initialise a LibreOffice profile at start-up so the first conversion doesn't pay for it."""
