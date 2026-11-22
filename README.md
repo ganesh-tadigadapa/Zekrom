@@ -36,11 +36,13 @@ There's also a `Dockerfile` if you want a single container (it builds the fronte
 
 ### Deploying
 
-It runs on a free Hugging Face Space (Docker). Create a Space with the Docker SDK, log in with `hf auth login`, then:
+It runs on Render's free plan using the `render.yaml` in this repo:
 
-```bash
-scripts/deploy-hf.sh <your-hf-username>
-```
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ganesh-tadigadapa/Snipex)
+
+The free plan sleeps after 15 minutes without visitors, so the first visit after that takes about a minute to wake up. Every push to `main` redeploys it.
+
+If you have Hugging Face PRO (Docker Spaces need it), `scripts/deploy-hf.sh <your-hf-username>` deploys there instead.
 
 ## How it's put together
 

@@ -1,0 +1,20 @@
+# Render Blueprint: one free web service built from the Dockerfile.
+# The free plan has 512 MB of RAM, so this keeps a single LibreOffice instance
+# and smaller upload limits to stay inside it.
+services:
+  - type: web
+    name: zekrom
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: ZEKROM_OFFICE_WORKERS
+        value: "1"
+      - key: ZEKROM_WORKERS
+        value: "2"
+      - key: ZEKROM_MAX_FILE_MB
+        value: "50"
+      - key: ZEKROM_MAX_BATCH_MB
+        value: "200"
