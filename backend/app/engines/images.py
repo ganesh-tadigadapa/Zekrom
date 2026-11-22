@@ -11,6 +11,30 @@ Image.MAX_IMAGE_PIXELS = 180_000_000
 
 PIL_FORMAT = {"jpg": "JPEG", "png": "PNG", "webp": "WEBP", "bmp": "BMP", "tiff": "TIFF", "gif": "GIF", "pdf": "PDF"}
 NO_ALPHA = {"jpg", "bmp", "pdf"}
+# EXIF orientation -> PyMuPDF insert_image rotation. Mirrored orientations (2, 4, 5, 7) aren't
+# listed: those few files take the decode-and-redraw path.
+JPEG_ROTATE = {1: 0, 3: 180, 6: 270, 8: 90}
+PDF_DPI = 150.0
+
+
+def _jpeg_passthrough(src: Path) -> tuple[int, int, int] | None:
+    """(rotation, width, height) if this JPEG can go into a PDF as-is, else None.
+
+    Embedding the original JPEG bytes skips decoding entirely: a 12 MP phone photo would
+    otherwise need ~36 MB per copy of raw pixels (several copies), which is what ran a 512 MB
+    instance out of memory. It is also much faster and loses no quality.
+    """
+    with Image.open(src) as im:  # reads the header only
+        if im.format != "JPEG" or im.mode not in ("RGB", "L"):
+            return None
+        rot = JPEG_ROTATE.get(im.getexif().get(0x0112, 1))
+        return None if rot is None else (rot, *im.size)
+
+
+def _insert_jpeg_page(doc, src: Path, rot: int, width: int, height: int) -> None:
+    pw, ph = (height, width) if rot in (90, 270) else (width, height)
+    page = doc.new_page(width=pw * 72 / PDF_DPI, height=ph * 72 / PDF_DPI)
+    page.insert_image(page.rect, filename=str(src), rotate=rot)
 
 
 def _flatten(img: Image.Image, background=(255, 255, 255)) -> Image.Image:
@@ -53,6 +77,13 @@ def save_image(img: Image.Image, target: Path, dst: str, quality: int = 90) -> N
 
 def convert(src: Path, out_dir: Path, stem: str, dst: str, options: dict) -> list[Path]:
     target = out_dir / f"{stem}.{dst}"
+    if dst == "pdf" and (jpeg := _jpeg_passthrough(src)):
+        import pymupdf
+
+        with pymupdf.open() as doc:
+            _insert_jpeg_page(doc, src, *jpeg)
+            doc.save(target, garbage=3, deflate=True)
+        return [target]
     with Image.open(src) as im:
         frames = getattr(im, "n_frames", 1)
         if dst == "pdf" and frames > 1:
@@ -147,10 +178,13 @@ def images_to_pdf(srcs: list[Path], out_dir: Path, stem: str, options: dict) -> 
             with pymupdf.open(src, filetype="svg") as d, pymupdf.open("pdf", d.convert_to_pdf()) as page_pdf:
                 out.insert_pdf(page_pdf)
             continue
+        if jpeg := _jpeg_passthrough(src):
+            _insert_jpeg_page(out, src, *jpeg)
+            continue
         with Image.open(src) as im:
             for frame in ImageSequence.Iterator(im):
                 buf = io.BytesIO()
-                _prepare(frame.copy(), "pdf").save(buf, "PDF", resolution=150.0)
+                _prepare(frame.copy(), "pdf").save(buf, "PDF", resolution=PDF_DPI)
                 with pymupdf.open("pdf", buf.getvalue()) as page_pdf:
                     out.insert_pdf(page_pdf)
     out.save(target, garbage=3, deflate=True)

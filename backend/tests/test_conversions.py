@@ -149,3 +149,39 @@ def test_zip_outputs_are_valid(samples, tmp_path):
     for p in out:
         validate_file(p, "pdf")
     assert all(not zipfile.is_zipfile(p) for p in out)
+
+
+@pytest.mark.parametrize("orientation", [1, 3, 6, 8, 2])
+def test_phone_photo_to_pdf_keeps_orientation_and_bytes(orientation, tmp_path):
+    """Phone JPEGs are embedded as-is (no decode); the EXIF rotation must still be applied.
+    Orientation 2 (mirrored) exercises the decode-and-redraw fallback."""
+    import io
+
+    import pymupdf
+    from PIL import Image, ImageOps
+
+    from app.engines.images import _jpeg_passthrough
+
+    img = Image.new("RGB", (400, 200), "white")
+    img.paste((255, 0, 0), (0, 0, 100, 60))  # red block marks the stored top-left corner
+    exif = Image.Exif()
+    exif[0x0112] = orientation
+    src = tmp_path / "IMG_0001.jpg"
+    img.save(src, "JPEG", quality=95, exif=exif)
+    want = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
+    assert (_jpeg_passthrough(src) is None) == (orientation == 2)
+
+    for out in (_tool("images_to_pdf", [src, src], tmp_path)[0],
+                Path(run({"op": "convert", "inputs": [str(src)], "src_format": "jpg", "dst": "pdf",
+                          "out_dir": str(tmp_path / "single"), "stem": "one", "options": {}})[0])):
+        with pymupdf.open(out) as doc:
+            pix = doc[0].get_pixmap()
+            got = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+            if orientation != 2:  # passthrough: the original JPEG stream is embedded unchanged
+                xref = doc[0].get_images()[0][0]
+                assert doc.extract_image(xref)["image"] == src.read_bytes()
+        assert (got.width > got.height) == (want.width > want.height)
+        small = (8, 4) if want.width > want.height else (4, 8)
+        g, w = got.resize(small).load(), want.resize(small).load()
+        red = [(x, y) for x in range(small[0]) for y in range(small[1]) if w[x, y][0] > 200 and w[x, y][2] < 100]
+        assert red and all(g[x, y][0] > 200 and g[x, y][2] < 100 for x, y in red)

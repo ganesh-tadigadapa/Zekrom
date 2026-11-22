@@ -12,8 +12,9 @@ services:
     envVars:
       - key: ZEKROM_OFFICE_WORKERS
         value: "1"
+      # 0.1 CPU: parallel conversions aren't faster, they only stack up memory.
       - key: ZEKROM_WORKERS
-        value: "2"
+        value: "1"
       - key: ZEKROM_MAX_FILE_MB
         value: "50"
       - key: ZEKROM_MAX_BATCH_MB
