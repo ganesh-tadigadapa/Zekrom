@@ -73,7 +73,7 @@ cd backend
 
 ## Settings
 
-Everything is an environment variable: `ZEKROM_MAX_FILES` (30), `ZEKROM_MAX_FILE_MB` (100), `ZEKROM_MAX_BATCH_MB` (500), `ZEKROM_WORKERS`, `ZEKROM_OFFICE_WORKERS`, `ZEKROM_TIMEOUT`, `ZEKROM_RETENTION_S` (3600), `ZEKROM_RATE_LIMIT`, `ZEKROM_SCAN_COMMAND` (plug in a virus scanner like `clamdscan`).
+Everything is an environment variable: `ZEKROM_MAX_FILES` (30), `ZEKROM_MAX_FILE_MB` (100), `ZEKROM_MAX_BATCH_MB` (500), `ZEKROM_WORKERS`, `ZEKROM_OFFICE_WORKERS`, `ZEKROM_TIMEOUT`, `ZEKROM_RETENTION_S` (3600), `ZEKROM_RATE_LIMIT`, `ZEKROM_SCAN_COMMAND` (plug in a virus scanner like `clamdscan`), `ZEKROM_UNOSERVER` (1: keep one LibreOffice running instead of starting it per job; 0 turns that off).
 
 ## Known limits
 
@@ -85,3 +85,7 @@ Everything is an environment variable: `ZEKROM_MAX_FILES` (30), `ZEKROM_MAX_FILE
 ## Built with
 
 FastAPI, LibreOffice, PyMuPDF, pdf2docx, Pillow, openpyxl, React, Tailwind, Framer Motion, Lucide.
+
+## License
+
+MIT, see [LICENSE](LICENSE). Use it, fork it, host your own.
